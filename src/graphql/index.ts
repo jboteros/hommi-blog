@@ -1,33 +1,38 @@
 // Hook-based client (for React components)
-export { useViewer, viewerFragment, GET_VIEWER_QUERY } from "./hooks/useViewer";
 export {
-  useGetPropertiesPublic,
-  useGetProperty,
-  propertiesPublicFragment,
-  GET_PROPERTIES_PUBLIC_QUERY,
-} from "./hooks/useGetProperties";
+  useGetBlogs,
+  useGetBlog,
+  useGetBlogById,
+  useDeleteBlog,
+  useUpdateBlog,
+  useCreateBlog,
+  useGetBlogStats,
+} from "./hooks/useGetBlogs";
 
 export * from "./gql/graphql";
 export { useFragment } from "./gql/fragment-masking";
 
 // Generated types and documents
 export type {
-  Viewer,
-  Viewer_FragmentFragment,
-  GetViewerQuery,
-  GetViewerQueryVariables,
-  UpdateViewerMutation,
-  UpdateViewerMutationVariables,
-  InputViewerUpdate,
-  InputViewerCreate,
-  Property,
-  PropertyPublic,
-  GetPropertiesPublicQuery,
-  GetPropertiesPublicQueryVariables,
+  Blog,
+  BlogPublic,
+  BlogPublicFragmentFragment,
+  GetBlogsQuery,
+  GetBlogsQueryVariables,
+  GetBlogQuery,
+  GetBlogQueryVariables,
+  GetBlogByIdQuery,
+  GetBlogByIdQueryVariables,
+  DeleteBlogMutation,
+  DeleteBlogMutationVariables,
+  UpdateBlogMutation,
+  UpdateBlogMutationVariables,
+  CreateBlogMutation,
+  CreateBlogMutationVariables,
+  BlogInput,
+  GetBlogStatsQuery,
+  GetBlogStatsQueryVariables,
 } from "./gql/graphql";
-
-// Export the union type for properties
-export type { PropertyUnion } from "./hooks/useGetProperties";
 
 // Direct client (for server-side or non-React usage)
 export { client } from "./client";
