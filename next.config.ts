@@ -9,6 +9,13 @@ const nextConfig: NextConfig = {
   // Disable image optimization since we're client-side only
   images: {
     unoptimized: true,
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "cdn.hommi.app",
+        pathname: "**",
+      },
+    ],
   },
 };
 

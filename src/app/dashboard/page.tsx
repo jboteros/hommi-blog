@@ -8,6 +8,7 @@ import { FileText, Eye, Calendar, TrendingUp, Plus } from "lucide-react";
 import { useGetBlogStats } from "@/graphql/hooks/useGetBlogs";
 import { useAuthStore } from "@/store/useAuthStore";
 import UnauthorizedCard from "@/components/UnauthorizedCard";
+import Link from "next/link";
 
 export default function DashboardPage() {
   const { loading } = useAuth();
@@ -153,7 +154,7 @@ export default function DashboardPage() {
               Quick Actions
             </h3>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <a
+              <Link
                 href="/dashboard/blog/agregar"
                 className="relative group bg-white p-6 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-500 rounded-lg border border-gray-200 hover:border-gray-300"
               >
@@ -186,9 +187,9 @@ export default function DashboardPage() {
                     <path d="M20 4h1a1 1 0 00-1-1v1zm-1 12a1 1 0 102 0h-2zM8 3a1 1 0 000 2V3zM3.293 19.293a1 1 0 101.414 1.414l-1.414-1.414zM19 4v12h2V4h-2zm1-1H8v2h12V3zm-.707.293l-16 16 1.414 1.414 16-16-1.414-1.414z" />
                   </svg>
                 </span>
-              </a>
+              </Link>
 
-              <a
+              <Link
                 href="/dashboard/blog"
                 className="relative group bg-white p-6 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-500 rounded-lg border border-gray-200 hover:border-gray-300"
               >
@@ -218,7 +219,7 @@ export default function DashboardPage() {
                     <path d="M20 4h1a1 1 0 00-1-1v1zm-1 12a1 1 0 102 0h-2zM8 3a1 1 0 000 2V3zM3.293 19.293a1 1 0 101.414 1.414l-1.414-1.414zM19 4v12h2V4h-2zm1-1H8v2h12V3zm-.707.293l-16 16 1.414 1.414 16-16-1.414-1.414z" />
                   </svg>
                 </span>
-              </a>
+              </Link>
             </div>
           </div>
         </div>

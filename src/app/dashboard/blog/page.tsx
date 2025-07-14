@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import DashboardLayout from "@/components/DashboardLayout";
 import { useAuth } from "@/contexts/AuthContext";
 import { Plus, Edit, Trash2, Eye, Calendar, FileText } from "lucide-react";
@@ -110,18 +111,12 @@ export default function BlogPostsPage() {
                             {/* Main Image Preview */}
                             <div className="flex-shrink-0">
                               {blogData.mainImage ? (
-                                <img
+                                <Image
                                   src={blogData.mainImage}
                                   alt={blogData.title}
-                                  className=" aspect-[1200/630]  h-25 object-cover rounded-lg border border-gray-200"
-                                  onError={(e) => {
-                                    // Fallback to a placeholder if image fails to load
-                                    const target = e.target as HTMLImageElement;
-                                    target.style.display = "none";
-                                    target.nextElementSibling?.classList.remove(
-                                      "hidden"
-                                    );
-                                  }}
+                                  width={64}
+                                  height={64}
+                                  className="aspect-[1200/630] h-16 w-16 object-cover rounded-lg border border-gray-200"
                                 />
                               ) : null}
                               {!blogData.mainImage && (
