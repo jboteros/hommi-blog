@@ -1,0 +1,8 @@
+.git
+node_modules
+.next
+*.log
+Dockerfile
+docker-compose*
+# .env* - Commented out to allow environment files in Docker build
+README.md 
