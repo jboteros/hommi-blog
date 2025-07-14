@@ -1,8 +1,7 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useAuth } from '@/contexts/AuthContext';
-import { useRouter } from 'next/navigation';
+import { useState } from "react";
+import { useAuth } from "@/contexts/AuthContext";
 import {
   Home,
   FileText,
@@ -13,8 +12,8 @@ import {
   X,
   User,
   ChevronDown,
-  ChevronRight
-} from 'lucide-react';
+  ChevronRight,
+} from "lucide-react";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -24,36 +23,42 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [blogOpen, setBlogOpen] = useState(true);
   const { user, logout } = useAuth();
-  const router = useRouter();
+  // const router = useRouter();
 
   const handleLogout = async () => {
     try {
       await logout();
-      router.push('/login');
+      // Removed router.push('/login'); global protection will handle redirect
     } catch (error) {
-      console.error('Logout error:', error);
+      console.error("Logout error:", error);
     }
   };
 
   const mainNavigation = [
-    { name: 'Dashboard', href: '/dashboard', icon: Home },
+    { name: "Dashboard", href: "/dashboard", icon: Home },
   ];
 
   const blogNavigation = [
-    { name: 'Blog Dashboard', href: '/dashboard/blog', icon: FileText },
-    { name: 'Blog Posts', href: '/dashboard/blog', icon: FileText },
-    { name: 'New Post', href: '/dashboard/blog/new', icon: Plus },
-    { name: 'Blog Settings', href: '/dashboard/settings', icon: Settings },
+    { name: "Ver posts", href: "/dashboard/blog", icon: FileText },
+    { name: "Agregar post", href: "/dashboard/blog/agregar", icon: Plus },
+    { name: "Settings", href: "/dashboard/settings", icon: Settings },
   ];
 
   return (
     <div className="min-h-screen bg-gray-100">
       {/* Mobile sidebar */}
-      <div className={`fixed inset-0 z-50 lg:hidden ${sidebarOpen ? 'block' : 'hidden'}`}>
-        <div className="fixed inset-0 bg-gray-600 bg-opacity-75" onClick={() => setSidebarOpen(false)} />
+      <div
+        className={`fixed inset-0 z-50 lg:hidden ${sidebarOpen ? "block" : "hidden"}`}
+      >
+        <div
+          className="fixed inset-0 bg-gray-600 bg-opacity-75"
+          onClick={() => setSidebarOpen(false)}
+        />
         <div className="fixed inset-y-0 left-0 flex w-64 flex-col bg-white">
           <div className="flex h-16 items-center justify-between px-4">
-            <h1 className="text-xl font-semibold text-gray-900">Admin Dashboard</h1>
+            <h1 className="text-xl font-semibold text-gray-900">
+              Admin Dashboard
+            </h1>
             <button
               onClick={() => setSidebarOpen(false)}
               className="text-gray-400 hover:text-gray-600"
@@ -82,7 +87,11 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                 onClick={() => setBlogOpen((open) => !open)}
                 className="flex items-center w-full px-2 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 rounded-md focus:outline-none"
               >
-                {blogOpen ? <ChevronDown className="h-4 w-4 mr-2" /> : <ChevronRight className="h-4 w-4 mr-2" />}
+                {blogOpen ? (
+                  <ChevronDown className="h-4 w-4 mr-2" />
+                ) : (
+                  <ChevronRight className="h-4 w-4 mr-2" />
+                )}
                 Blog
               </button>
               {blogOpen && (
@@ -108,7 +117,9 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
             <div className="flex items-center">
               <User className="h-8 w-8 text-gray-400" />
               <div className="ml-3">
-                <p className="text-sm font-medium text-gray-700">{user?.email}</p>
+                <p className="text-sm font-medium text-gray-700">
+                  {user?.email || "Loading..."}
+                </p>
               </div>
             </div>
             <button
@@ -126,7 +137,9 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       <div className="hidden lg:fixed lg:inset-y-0 lg:flex lg:w-64 lg:flex-col">
         <div className="flex flex-col flex-grow bg-white border-r border-gray-200">
           <div className="flex h-16 items-center px-4">
-            <h1 className="text-xl font-semibold text-gray-900">Admin Dashboard</h1>
+            <h1 className="text-xl font-semibold text-gray-900">
+              Admin Dashboard
+            </h1>
           </div>
           <nav className="flex-1 space-y-1 px-2 py-4">
             {mainNavigation.map((item) => {
@@ -149,7 +162,11 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                 onClick={() => setBlogOpen((open) => !open)}
                 className="flex items-center w-full px-2 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 rounded-md focus:outline-none"
               >
-                {blogOpen ? <ChevronDown className="h-4 w-4 mr-2" /> : <ChevronRight className="h-4 w-4 mr-2" />}
+                {blogOpen ? (
+                  <ChevronDown className="h-4 w-4 mr-2" />
+                ) : (
+                  <ChevronRight className="h-4 w-4 mr-2" />
+                )}
                 Blog
               </button>
               {blogOpen && (
@@ -175,7 +192,9 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
             <div className="flex items-center">
               <User className="h-8 w-8 text-gray-400" />
               <div className="ml-3">
-                <p className="text-sm font-medium text-gray-700">{user?.email}</p>
+                <p className="text-sm font-medium text-gray-700">
+                  {user?.email || "Loading..."}
+                </p>
               </div>
             </div>
             <button
@@ -209,4 +228,4 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       </div>
     </div>
   );
-} 
+}

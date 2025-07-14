@@ -5,6 +5,7 @@ import DashboardLayout from '@/components/DashboardLayout';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRouter } from 'next/navigation';
 import { Save, User, Shield, Bell } from 'lucide-react';
+import PageHeader from "@/components/PageHeader";
 
 export default function SettingsPage() {
   const { user, loading } = useAuth();
@@ -64,10 +65,10 @@ export default function SettingsPage() {
   return (
     <DashboardLayout>
       <div className="space-y-6">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Settings</h1>
-          <p className="text-gray-600">Manage your account and application settings</p>
-        </div>
+        <PageHeader
+          title="Settings"
+          subtitle="Manage your account and application settings"
+        />
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Profile Settings */}

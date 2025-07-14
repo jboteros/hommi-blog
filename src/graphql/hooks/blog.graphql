@@ -1,0 +1,158 @@
+fragment BlogPublicFragment on BlogPublic {
+  _id
+  title
+  summary
+  status
+  createdAt
+  updatedAt
+  timesViewed
+  slug
+  mainImage
+  tags
+  seo_title
+  seo_desc
+}
+
+fragment BlogFragment on Blog {
+  _id
+  title
+  summary
+  status
+  createdAt
+  updatedAt
+  timesViewed
+  slug
+  mainImage
+  tags
+  seo_title
+  seo_desc
+  content
+}
+
+query GetBlogs($page: Int, $limit: Int, $filter: BlogFilter) {
+  getBlogs(page: $page, limit: $limit, filter: $filter) {
+    success
+    message
+    data {
+      docs {
+        ...BlogPublicFragment
+      }
+      totalDocs
+      limit
+      totalPages
+      page
+      pagingCounter
+      hasPrevPage
+      hasNextPage
+      prevPage
+      nextPage
+    }
+  }
+}
+
+query GetBlog($slug: String!) {
+  getBlog(slug: $slug) {
+    success
+    message
+    data {
+      ...BlogFragment
+    }
+  }
+}
+
+query GetBlogById($id: ID!) {
+  getBlogById(id: $id) {
+    success
+    message
+    data {
+      ...BlogFragment
+    }
+  }
+}
+
+mutation DeleteBlog($blogId: ID!) {
+  deleteBlog(blogId: $blogId) {
+    data {
+      _id
+    }
+    success
+    message
+  }
+}
+
+mutation UpdateBlog($blogId: ID!, $blogData: BlogInput!) {
+  updateBlog(blogId: $blogId, blogData: $blogData) {
+    success
+    message
+    data {
+      _id
+      title
+      summary
+      content
+      status
+      slug
+      mainImage
+      tags
+      seo_title
+      seo_desc
+      author {
+        _id
+        displayName
+      }
+      timesViewed
+      savedCount
+      publicationScore
+      score
+      ogImage
+      createdAt
+      updatedAt
+    }
+  }
+}
+
+mutation CreateBlog($blogData: BlogInput!) {
+  createBlog(blogData: $blogData) {
+    success
+    message
+    data {
+      _id
+      title
+      summary
+      content
+      status
+      slug
+      mainImage
+      tags
+      seo_title
+      seo_desc
+      author {
+        _id
+        displayName
+      }
+      timesViewed
+      savedCount
+      publicationScore
+      score
+      ogImage
+      createdAt
+      updatedAt
+    }
+  }
+}
+
+query GetBlogStats {
+  getBlogStats {
+    success
+    message
+    data {
+      draftPosts
+      totalPosts
+      publishedPosts
+      totalViews
+      tags {
+        count
+        tag
+      }
+    }
+  }
+}

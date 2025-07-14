@@ -1,33 +1,26 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import DashboardLayout from '@/components/DashboardLayout';
-import { useAuth } from '@/contexts/AuthContext';
-import { useRouter } from 'next/navigation';
-import { FileText, Eye, Calendar, TrendingUp, Plus } from 'lucide-react';
-
-interface DashboardStats {
-  totalPosts: number;
-  publishedPosts: number;
-  draftPosts: number;
-  totalViews: number;
-}
+// import { useEffect } from "react";
+import DashboardLayout from "@/components/DashboardLayout";
+import { useAuth } from "@/contexts/AuthContext";
+// import { useRouter } from "next/navigation";
+import { FileText, Eye, Calendar, TrendingUp, Plus } from "lucide-react";
+import { useGetBlogStats } from "@/graphql/hooks/useGetBlogs";
+import { useAuthStore } from "@/store/useAuthStore";
+import UnauthorizedCard from "@/components/UnauthorizedCard";
 
 export default function DashboardPage() {
-  const { user, loading } = useAuth();
-  const router = useRouter();
-  const [stats] = useState<DashboardStats>({
-    totalPosts: 0,
-    publishedPosts: 0,
-    draftPosts: 0,
-    totalViews: 0,
-  });
+  const { loading } = useAuth();
+  const { isAdmin, user } = useAuthStore();
+  console.log("🚀 ~ DashboardPage ~ isAdmin:", isAdmin);
+  // const router = useRouter();
+  const { stats, loading: loadingStats } = useGetBlogStats();
 
-  useEffect(() => {
-    if (!loading && !user) {
-      router.push('/login');
-    }
-  }, [user, loading, router]);
+  // Removed useEffect for redirecting to /login; now handled by ProtectedPage in layout.
+
+  if (!isAdmin) {
+    return <UnauthorizedCard />;
+  }
 
   if (loading) {
     return (
@@ -46,7 +39,7 @@ export default function DashboardPage() {
       <div className="space-y-6">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-          <p className="text-gray-600">Welcome back, {user.email}</p>
+          <p className="text-gray-600">Bienvenido de nuevo, {user.email}</p>
         </div>
 
         {/* Stats Grid */}
@@ -60,10 +53,10 @@ export default function DashboardPage() {
                 <div className="ml-5 w-0 flex-1">
                   <dl>
                     <dt className="text-sm font-medium text-gray-500 truncate">
-                      Total Posts
+                      Posts totales
                     </dt>
                     <dd className="text-lg font-medium text-gray-900">
-                      {stats.totalPosts}
+                      {loadingStats ? "..." : stats?.totalPosts || 0}
                     </dd>
                   </dl>
                 </div>
@@ -80,10 +73,10 @@ export default function DashboardPage() {
                 <div className="ml-5 w-0 flex-1">
                   <dl>
                     <dt className="text-sm font-medium text-gray-500 truncate">
-                      Published Posts
+                      Publicados
                     </dt>
                     <dd className="text-lg font-medium text-gray-900">
-                      {stats.publishedPosts}
+                      {loadingStats ? "..." : stats?.publishedPosts || 0}
                     </dd>
                   </dl>
                 </div>
@@ -100,10 +93,10 @@ export default function DashboardPage() {
                 <div className="ml-5 w-0 flex-1">
                   <dl>
                     <dt className="text-sm font-medium text-gray-500 truncate">
-                      Draft Posts
+                      Borradores
                     </dt>
                     <dd className="text-lg font-medium text-gray-900">
-                      {stats.draftPosts}
+                      {loadingStats ? "..." : stats?.draftPosts || 0}
                     </dd>
                   </dl>
                 </div>
@@ -120,10 +113,10 @@ export default function DashboardPage() {
                 <div className="ml-5 w-0 flex-1">
                   <dl>
                     <dt className="text-sm font-medium text-gray-500 truncate">
-                      Total Views
+                      Vistas totales
                     </dt>
                     <dd className="text-lg font-medium text-gray-900">
-                      {stats.totalViews}
+                      {loadingStats ? "..." : stats?.totalViews || 0}
                     </dd>
                   </dl>
                 </div>
@@ -132,15 +125,36 @@ export default function DashboardPage() {
           </div>
         </div>
 
+        {stats?.tags && stats.tags.length > 0 && (
+          <div className="bg-white shadow rounded-lg p-6 mt-6">
+            <h2 className="text-lg font-semibold mb-4 text-gray-800">
+              Tags usados
+            </h2>
+            <div className="flex flex-wrap gap-3">
+              {stats.tags.map((tagObj) => (
+                <span
+                  key={tagObj.tag}
+                  className="inline-flex items-center bg-blue-100 text-blue-800 text-xs px-3 py-1 rounded-full"
+                >
+                  #{tagObj.tag}
+                  <span className="ml-2 bg-blue-200 text-blue-900 rounded-full px-2 py-0.5 text-xs font-bold">
+                    {tagObj.count}
+                  </span>
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Quick Actions */}
         <div className="bg-white shadow rounded-lg">
           <div className="px-4 py-5 sm:p-6">
-            <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">
+            <h3 className="text-lg font-semibold mb-4 text-gray-800">
               Quick Actions
             </h3>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <a
-                href="/dashboard/blog/new"
+                href="/dashboard/blog/agregar"
                 className="relative group bg-white p-6 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-500 rounded-lg border border-gray-200 hover:border-gray-300"
               >
                 <div>
@@ -149,19 +163,26 @@ export default function DashboardPage() {
                   </span>
                 </div>
                 <div className="mt-8">
-                  <h3 className="text-lg font-medium">
-                    <span className="absolute inset-0" aria-hidden="true" />
-                    Create New Post
+                  <h3 className="text-lg font-medium text-gray-700">
+                    <span
+                      className="absolute inset-0 text-lg font-semibold mb-4 "
+                      aria-hidden="true"
+                    />
+                    Creare post nuevo
                   </h3>
                   <p className="mt-2 text-sm text-gray-500">
-                    Start writing a new blog post
+                    Empezar a escribir nuevo post
                   </p>
                 </div>
                 <span
                   className="pointer-events-none absolute top-6 right-6 text-gray-300 group-hover:text-gray-400"
                   aria-hidden="true"
                 >
-                  <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+                  <svg
+                    className="h-6 w-6"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                  >
                     <path d="M20 4h1a1 1 0 00-1-1v1zm-1 12a1 1 0 102 0h-2zM8 3a1 1 0 000 2V3zM3.293 19.293a1 1 0 101.414 1.414l-1.414-1.414zM19 4v12h2V4h-2zm1-1H8v2h12V3zm-.707.293l-16 16 1.414 1.414 16-16-1.414-1.414z" />
                   </svg>
                 </span>
@@ -177,19 +198,23 @@ export default function DashboardPage() {
                   </span>
                 </div>
                 <div className="mt-8">
-                  <h3 className="text-lg font-medium">
+                  <h3 className="text-lg font-medium text-gray-700">
                     <span className="absolute inset-0" aria-hidden="true" />
-                    Manage Posts
+                    Ver posts
                   </h3>
                   <p className="mt-2 text-sm text-gray-500">
-                    View and edit existing blog posts
+                    Ver y editar posts
                   </p>
                 </div>
                 <span
                   className="pointer-events-none absolute top-6 right-6 text-gray-300 group-hover:text-gray-400"
                   aria-hidden="true"
                 >
-                  <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+                  <svg
+                    className="h-6 w-6"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                  >
                     <path d="M20 4h1a1 1 0 00-1-1v1zm-1 12a1 1 0 102 0h-2zM8 3a1 1 0 000 2V3zM3.293 19.293a1 1 0 101.414 1.414l-1.414-1.414zM19 4v12h2V4h-2zm1-1H8v2h12V3zm-.707.293l-16 16 1.414 1.414 16-16-1.414-1.414z" />
                   </svg>
                 </span>
@@ -200,4 +225,4 @@ export default function DashboardPage() {
       </div>
     </DashboardLayout>
   );
-} 
+}
