@@ -10,9 +10,6 @@ RUN apk add --no-cache git
 # Copy package files first for better caching
 COPY package.json package-lock.json* pnpm-lock.yaml* yarn.lock* ./
 
-# Copy the packages directory (this will include the submodule)
-COPY packages ./packages
-
 # Install dependencies
 RUN if [ -f package-lock.json ]; then npm ci; \
     elif [ -f pnpm-lock.yaml ]; then npm install -g pnpm && pnpm install; \
@@ -38,7 +35,6 @@ ENV NODE_ENV=production
 # Copy only necessary files from builder
 COPY --from=builder /app/package.json ./
 COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/packages ./packages
 COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/next-env.d.ts ./
